@@ -1,0 +1,9 @@
+syms K[]
+syms v0
+syms theta
+theta = deg2rad(30)
+
+K = [(1/sqr(3)) -(1/sqr(3)) (1/sqr(3))]
+
+syms RK
+RK = [(K_1*K_1*v0+cos(theta)) (K_1*K_2*v0-K_3*sin(theta)) (K_1*K_3*v0+K_2*sin(theta)); (K_1*K_2*v0+K_3*sin(theta)) (K_2*K_2*v0+cos(theta)) (K_2*K_3*v0-K_1*sin(theta)); (K_1*K_3)]
