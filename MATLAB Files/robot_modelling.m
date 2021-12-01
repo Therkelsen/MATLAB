@@ -39,7 +39,7 @@ JL2O = [z(1) 0; z(2) 0; z(3) 0]
 % Angular velocity
 
 w1 = JL1O * dq1
-w2 = JL2O * dq2
+w2 = JL2O * (dq1 + dq2)
 
 % Translational velocity
 
@@ -47,12 +47,31 @@ dp1 = JL1P * dq1
 dp2 = JL2P * dq2
 
 % Inertia tensor
-syms I I0L1 IL1L2 I0L2 R01T R12T m l
-I = [(1/12)*m*l 0 0; 0 0 0; 0 0 (1/12)*m*l]
+syms IL1 IL2 I0L1 IL1L2 I0L2 R01T R12T R02 R02T m L1 L2
+IL1 = [(1/12)*m*L1 0 0; 0 0 0; 0 0 (1/12)*m*L2]
+IL2 = [(1/12)*m*L2 0 0; 0 0 0; 0 0 (1/12)*m*L2]
 
 R01T = transpose(R01)
 R12T = transpose(R12)
+R02 = [cos(q1 + q2) -sin(q1 + q2) 0; sin(q1 + q2) cos(q1 + q2) 0; 0 0 1]
+R02T = transpose(R02)
 
-I0L1 = R01T*I*R01
-IL1L2 = R12T*I*R12
-I0L2 = I0L1 + IL1L2
+I0L1 = R01T*IL1*R01
+I0L1 = simplify(I0L1)
+I0L2 = R02T*IL2*R02
+I0L2 = simplify(I0L1 + IL1L2)
+
+% Kinetisk energi
+
+syms Ekin(q) ml1 ml2 dp1T dp2T w1T w2T;
+
+dp1T = transpose(dp1)
+dp2T = transpose(dp2)
+w1T = transpose(w1)
+w2T = transpose(w2)
+
+Ekin(q) = 1/2*ml1*dp1T*dp1+1/2*w1T*I0L1*w1+1/2*ml2*dp2T*dp2+1/2*w2T*I0L2*w2
+Ekin(q) = simplify(Ekin(q))
+
+pretty(Ekin(q))
+latex(Ekin(q))
