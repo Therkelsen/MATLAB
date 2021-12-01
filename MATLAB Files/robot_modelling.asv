@@ -47,8 +47,8 @@ dp1 = JL1P * dq1
 dp2 = JL2P * dq2
 
 % Inertia tensor
-syms I I0L1 IL1L2 I0L2 R01T R12T m l
-I = [(1/12)*m*l 0 0; 0 0 0; 0 0 (1/12)*m*l]
+syms I I0L1 IL1L2 I0L2 R01T R12T
+I = []
 
 R01T = transpose(R01)
 R12T = transpose(R12)
