@@ -48,18 +48,18 @@ dp1 = Jl1P * dq1
 dp2 = Jl2P * dq2
 
 % Inertia tensor
-syms Il1 Il2 I0l1 Il1l2 I0l2 R01T R12T R02 R02T m1 m2 l1 l2
-Il1 = [(1/12)*m1*l1 0 0; 0 0 0; 0 0 (1/12)*m1*l2]
-Il2 = [(1/12)*m2*l2 0 0; 0 0 0; 0 0 (1/12)*m2*l2]
+syms I Il1 Il2 I0l1 Il1l2 I0l2 R01T R12T R02 R02T m1 m2 l1 l2
+%Il1 = [(1/12)*m1*l1 0 0; 0 0 0; 0 0 (1/12)*m1*l2]
+%Il2 = [(1/12)*m2*l2 0 0; 0 0 0; 0 0 (1/12)*m2*l2]
 
 R01T = transpose(R01)
 R12T = transpose(R12)
 R02 = [cos(q1 + q2) -sin(q1 + q2) 0; sin(q1 + q2) cos(q1 + q2) 0; 0 0 1]
 R02T = transpose(R02)
 
-I0l1 = R01T*Il1*R01
+I0l1 = R01T*I*R01
 I0l1 = simplify(I0l1)
-I0l2 = R02T*Il2*R02
+I0l2 = R02T*I*R02
 I0l2 = simplify(I0l2)
 
 % Kinetisk energi
