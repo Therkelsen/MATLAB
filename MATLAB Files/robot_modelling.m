@@ -29,15 +29,16 @@ syms pl1 pl2 p0 p1 Jl1P Jl1P1 Jl1P2 Jl1O Jl1O1 Jl1O2 Jl2P Jl2P1 Jl2P2 Jl2O Jl2O1
 
 z = [0; 0; 1];
 
-Jl1P1 = cross(z,[MMP01(1); MMP01(2); MMP01(3)]);
+Jl1P1 = cross(z,[MMP01(1)-0; MMP01(2)-0; MMP01(3)-0]);
 Jl1P = [Jl1P1(1) 0; Jl1P1(2) 0; Jl1P1(3) 0]
 Jl1O1 = z;
 Jl1O = [z(1) 0; z(2) 0; z(3) 0]
 
-Jl2P1 = cross(z,[MMP02(1); MMP02(2); MMP02(3)]);
-Jl2P = [Jl2P1(1) 0; Jl2P1(2) 0; Jl2P1(3) 0]
+Jl2P1 = cross(z,[MMP02(1)-0; MMP02(2)-0; MMP02(3)-0]);
+Jl2P2 = cross(z,[MMP02(1)-P01(1); MMP02(2)-P01(2); MMP02(3)-P01(3)]);
+Jl2P = [Jl2P1(1) Jl2P2(1); Jl2P1(2) Jl2P2(2); Jl2P1(3) Jl2P2(3)]
 Jl2O1 = z;
-Jl2O = [z(1) 0; z(2) 0; z(3) 0]
+Jl2O = [Jl2O1(1) Jl1O1(1); Jl2O1(2) Jl1O1(2); Jl2O1(3) Jl1O1(3)]
 
 % Angular velocity
 w1 = Jl1O * dq1
