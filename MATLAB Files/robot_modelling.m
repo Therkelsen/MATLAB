@@ -63,16 +63,29 @@ I0l1 = simplify(I0l1)
 I0l2 = R02T*I*R02
 I0l2 = simplify(I0l2)
 
+
 % Kinetisk energi
+syms Ekin(q) ml1 ml2 dp1T dp2T w1T w2T dq I1l1 I2l2;
 
-syms Ekin(q) ml1 ml2 dp1T dp2T w1T w2T;
-
+dq = [dq1; dq2]
+dqT = transpose(dq)
 dp1T = transpose(dp1)
 dp2T = transpose(dp2)
 w1T = transpose(w1)
 w2T = transpose(w2)
+Jl1PT = transpose(Jl1P)
+Jl1OT = transpose(Jl1O)
+Jl2PT = transpose(Jl2P)
+Jl2OT = transpose(Jl2O)
 
-Ekin(q) = (1/2*ml1*dp1T*dp1)+(1/2*w1T*I0l1*w1)+(1/2*ml2*dp2T*dp2)+(1/2*w2T*I0l2*w2)
+%Ekin(q) = (1/2*ml1*dp1T*dp1)+(1/2*w1T*I0l1*w1)+(1/2*ml2*dp2T*dp2)+(1/2*w2T*I0l2*w2)
+
+Ekinl1(q) = 1/2 * ml1 * (dqT * Jl1PT) * (Jl1P * dq) + 1/2 * (dqT * Jl1OT) * R01 * I1l1 * R01T * (Jl1O * dq);
+Ekinl2(q) = 1/2 * ml2 * (dqT * Jl2PT) * (Jl2P * dq) + 1/2 * (dqT * Jl2OT) * R02 * I2l2 * R02T * (Jl2O * dq);
+Ekin(q) = Ekinl1(q) * Ekinl2(q)
+% Følgende ligninger viser ligningerne ovenfor er rigtige. Tjek den mod lektion 11 slide 33.
+%Ekinl1Test(q) = ml1 * (Jl1PT) * (Jl1P) +(Jl1OT) * R01 * I1l1 * R01T * (Jl1O)
+%Ekinl2Test(q) = ml2 * (Jl2PT) * (Jl2P) + (Jl2OT) * R02 * I2l2 * R02T * (Jl2O)
 
 pretty(Ekin(q))
 
