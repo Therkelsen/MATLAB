@@ -74,3 +74,17 @@ w2T = transpose(w2)
 Ekin(q) = (1/2*ml1*dp1T*dp1)+(1/2*w1T*I0l1*w1)+(1/2*ml2*dp2T*dp2)+(1/2*w2T*I0l2*w2)
 
 pretty(Ekin(q))
+
+%% 
+% Trans-hastigheder
+syms l1 s1 c1 c2 lc1 lc2 c12 s12 voc2 qp qp1 qp2 nul A B C res voc1;
+
+qp = [qp1; qp2]
+nul = [0; 0; 1]
+A = [l1*c1 + lc2*c12; l1*s1 + lc2*s12; 0]
+B = [l1*c1; l1*s1; 0]
+voc2 = [cross(nul,A) cross(nul,(A-B))]
+res = voc2*qp
+
+C = [-l1*s1 0; lc1*c1 0; 0 0]
+voc1 = C*qp
