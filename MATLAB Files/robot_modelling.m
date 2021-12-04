@@ -126,21 +126,20 @@ L = Ekin - Epot
 % part1 skal manuelt differentieres i forhold til tid efter partial differention
 % part1 = diff(L,dq)
 part11 = diff(L,dq1)
+% simplify(part11) = I1l1*dq1 + I2l2*dq1 + I2l2*dq2 + dq1*l1^2*ml2 + dq1*lc1^2*ml1 + dq1*lc2^2*ml2 + dq2*lc2^2*ml2 + 2*dq1*l1*lc2*ml2*cos(q2) + dq2*l1*lc2*ml2*cos(q2)
+% manuel simplify = dq1*(I1l1 + I2l2 + lc1^2*ml1 + ml2*(l1^2 + lc2^2 + 2*l1*lc2*cos(q2))) + dq2*(I2l2 + ml2*(lc2^2 + l1*lc2*cos(q2)))
 part12 = diff(L,dq2)
+% simplify(part12) = I2l2*dq1 + I2l2*dq2 + dq1*lc2^2*ml2 + dq2*lc2^2*ml2 + dq1*l1*lc2*ml2*cos(q2)
+% manual simplify = dq1*(I2l2 + lc2^2*ml2 + l1*lc2*ml2*cos(q2)) + dq2*(I2l2 + lc2^2*ml2)
 % part2 = diff(L,q)
 part21 = diff(L,q1)
 part22 = diff(L,q2)
 
 % Lav manuel diff
 % simplify(part11) = I1l1*dq1 + I2l2*dq1 + I2l2*dq2 + dq1*l1^2*ml2 + dq1*lc1^2*ml1 + dq1*lc2^2*ml2 + dq2*lc2^2*ml2 + 2*dq1*l1*lc2*ml2*cos(q2) + dq2*l1*lc2*ml2*cos(q2)
-% OBS!! Her skal vi lige huske at differente q så den bliver til dq. DETTE
-% ER IKKE GJORT ENDU
-part11d = I1l1*ddq1 + I2l2*ddq1 + I2l2*ddq2 + ddq1*l1^2*ml2 + ddq1*lc1^2*ml1 + ddq1*lc2^2*ml2 + ddq2*lc2^2*ml2 + 2*ddq1*l1*lc2*ml2*cos(q2) + ddq2*l1*lc2*ml2*cos(q2)
-
+part11d = I1l1*ddq1 + I2l2*ddq1 + I2l2*ddq2 + ddq1*l1^2*ml2 + ddq1*lc1^2*ml1 + ddq1*lc2^2*ml2 + ddq2*lc2^2*ml2 + 2*ddq1*l1*lc2*ml2*(-sin(q2)) + ddq2*l1*lc2*ml2*(-sin(q2))
 %simplify(part12) = I2l2*dq1 + I2l2*dq2 + dq1*lc2^2*ml2 + dq2*lc2^2*ml2 + dq1*l1*lc2*ml2*cos(q2)
-% OBS!! Her skal vi lige huske at differente q så den bliver til dq. DETTE
-% ER IKKE GJORT ENDU
-part12d = I2l2*ddq1 + I2l2*ddq2 + ddq1*lc2^2*ml2 + ddq2*lc2^2*ml2 + ddq1*l1*lc2*ml2*cos(q2)
+part12d = I2l2*ddq1 + I2l2*ddq2 + ddq1*lc2^2*ml2 + ddq2*lc2^2*ml2 + ddq1*l1*lc2*ml2*(-sin(q2))
 
 full1 = part11d - part21 == tau1
 full2 = part12d - part22 == tau2
