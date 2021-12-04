@@ -64,9 +64,21 @@ I0l2 = R02T*I*R02
 I0l2 = simplify(I0l2)
 
 
-% Kinetisk energi
-syms Ekin(q) ml1 ml2 dp1T dp2T w1T w2T dq I1l1 I2l2;
+% Stedvektor til massemidtpunkt
+p0c1 = [lc1*cos(q1); lc1*sin(q1); 0]
+p0c2 = [lc2*cos(q1 + q2) + l1*cos(q1); lc2*sin(q1 + q2) + l1*sin(q1); 0]
 
+
+% Potentiel energi
+syms g ml1 ml2 
+g0 = [0; -g; 0]
+g0T = transpose(g0)
+
+Epot = -(ml1 * g0T *p0c1 + ml2 * g0T * p0c2)
+
+
+% Kinetisk energi
+syms Ekin(q) dp1T dp2T w1T w2T dq I1l1 I2l2;
 dq = [dq1; dq2]
 dqT = transpose(dq)
 dp1T = transpose(dp1)
@@ -82,12 +94,13 @@ Jl2OT = transpose(Jl2O)
 
 Ekinl1(q) = 1/2 * ml1 * (dqT * Jl1PT) * (Jl1P * dq) + 1/2 * (dqT * Jl1OT) * R01 * I1l1 * R01T * (Jl1O * dq);
 Ekinl2(q) = 1/2 * ml2 * (dqT * Jl2PT) * (Jl2P * dq) + 1/2 * (dqT * Jl2OT) * R02 * I2l2 * R02T * (Jl2O * dq);
-Ekin(q) = Ekinl1(q) * Ekinl2(q)
-% Følgende ligninger viser ligningerne ovenfor er rigtige. Tjek den mod lektion 11 slide 33.
+Ekin(q) = Ekinl1(q) + Ekinl2(q)
+% Følgende ligninger viser ligningerne ovenfor er rigtige. Tjek dem mod lektion 11 slide 33.
 %Ekinl1Test(q) = ml1 * (Jl1PT) * (Jl1P) +(Jl1OT) * R01 * I1l1 * R01T * (Jl1O)
 %Ekinl2Test(q) = ml2 * (Jl2PT) * (Jl2P) + (Jl2OT) * R02 * I2l2 * R02T * (Jl2O)
 
 pretty(Ekin(q))
+
 
 %% 
 % Trans-hastigheder
@@ -102,3 +115,76 @@ res = voc2*qp
 
 C = [-l1*s1 0; lc1*c1 0; 0 0]
 voc1 = C*qp
+
+
+%%
+% Bevægelsesligninger
+% Ved brug af Euler-Lagrance modellering
+syms ddq1 ddq2 tau1 tau2
+
+L = Ekin - Epot
+% part1 skal manuelt differentieres i forhold til tid efter partial differention
+% part1 = diff(L,dq)
+part11 = diff(L,dq1)
+part12 = diff(L,dq2)
+% part2 = diff(L,q)
+part21 = diff(L,q1)
+part22 = diff(L,q2)
+
+% Lav manuel diff
+% simplify(part11) = I1l1*dq1 + I2l2*dq1 + I2l2*dq2 + dq1*l1^2*ml2 + dq1*lc1^2*ml1 + dq1*lc2^2*ml2 + dq2*lc2^2*ml2 + 2*dq1*l1*lc2*ml2*cos(q2) + dq2*l1*lc2*ml2*cos(q2)
+% OBS!! Her skal vi lige huske at differente q så den bliver til dq. DETTE
+% ER IKKE GJORT ENDU
+part11d = I1l1*ddq1 + I2l2*ddq1 + I2l2*ddq2 + ddq1*l1^2*ml2 + ddq1*lc1^2*ml1 + ddq1*lc2^2*ml2 + ddq2*lc2^2*ml2 + 2*ddq1*l1*lc2*ml2*cos(q2) + ddq2*l1*lc2*ml2*cos(q2)
+
+%simplify(part12) = I2l2*dq1 + I2l2*dq2 + dq1*lc2^2*ml2 + dq2*lc2^2*ml2 + dq1*l1*lc2*ml2*cos(q2)
+% OBS!! Her skal vi lige huske at differente q så den bliver til dq. DETTE
+% ER IKKE GJORT ENDU
+part12d = I2l2*ddq1 + I2l2*ddq2 + ddq1*lc2^2*ml2 + ddq2*lc2^2*ml2 + ddq1*l1*lc2*ml2*cos(q2)
+
+full1 = part11d - part21 == tau1
+full2 = part12d - part22 == tau2
+
+Complete = [part11d; part12d] - [part21; part22] == [tau1;tau2]
+
+ddq1 = isolate(full1, ddq1)
+ddq2 = isolate(full2, ddq2)
+% Disse burde virke efter at part11d og part12d er lavet ordentligt (læs
+% relevant OBS ved disse)
+%dq1 = isolate(full1, dq1) 
+%dq2 = isolate(full2, dq2)
+
+
+% % Eksempel 1
+% syms L m k x dx t
+% L = 1/2*m*dx^2 - 1/2*k*x^2
+% part1 = diff(L,dx)
+% part2 = diff(L,x)
+% full = part1 - part2
+% 
+% 
+% % Eksempel 2
+% syms K1 K2 o1 o2 I1 I2 do1 do2
+% kin = 1/2 * I1 * do1^2 + 1/2 * I2 * do2^2
+% pot = 1/2 * K1 * o1^2 + 1/2 * K2* (o1 - o2)^2
+% L = kin-pot
+% 
+% part11 = diff(L,do1)
+% part21 = diff(L,o1)
+% full1 = part11 - part21
+% 
+% part12 = diff(L,do2)
+% part22 = diff(L,o2)
+% full2 = part12 - part22
+
+% clear
+% % Ekspempel 3
+% syms M m dxc ddxc xc m l g do ddo o Jp d dt
+% L = 1/2*(M+m)*dxc^2 + m*l*dxc*do*cos(o) + 1/2*(m*l^2+Jp)*do^2 + m*g*l*cos(o)
+% part11 = diff(L,dxc)
+% part12 = diff(L,do)
+% part21 = diff(L,xc)
+% part22 = diff(L,o)
+% % Først skal part11 og part12 differentieres i forhold til tiden (måske
+% % bare sæt d/dt foran symbols. Det har Christoffer gjort i slidene
+% Complete = [part11;part12] - [part21; part22]
