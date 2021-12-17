@@ -7,10 +7,10 @@ z = [z nan]
 z = reshape(z, [16,16])
 figure(1)
 stem3(x, y, z)
-title('Offset')
+title('MV Kalibreringsfejl')
 xlabel('X [mm]')
 ylabel('Y [mm]')
-zlabel('Offset [mm]')
+zlabel('Fejl [mm]')
 grid on
 xv = linspace(min(x), max(x), 20);
 yv = linspace(min(y), max(y), 20);
@@ -21,7 +21,7 @@ surf(X, Y, Z);
 grid on
 set(gca, 'ZLim',[-2 10])
 shading interp
-title('Offset')
+title('MV Kalibreringsfejl')
 xlabel('X [mm]')
 ylabel('Y [mm]')
-zlabel('Offset [mm]')
+zlabel('Fejl [mm]')
