@@ -1,0 +1,11 @@
+Feedback
+Opgaveløsningen er rigtig god. Derfor kun få kommentarer.
+Kommentarer
+- Modellen i (6) er korrekt, men der mangler enheder på flere udtryk.
+- Også tilstandsmodellen og overføringsfunktionen er korrekt. Jeg vil anbefale at dividerer (35) med I i både tæller og nævner
+- Argumenter for hvorfor en peak-time er nødvendig
+- Der bør indsættes krav til den stationære fejl
+- Fint afsnit med rodkurver. Det er klart og korrekt.
+- Polerne i boksen ved (55) er ikke korrekte. Der er bl.a. en pol i højre halvplan. Disse kommer af numeriske fejl, som I bør eliminere
+- Afsnit 4 er også godt. Der er ikke så megen forklaring, men figurerne er gode.
+- Der mangler et filter på d-led
