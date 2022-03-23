@@ -1,0 +1,33 @@
+%% Exercise 1 - Simulink system parameters
+clc
+clear
+close all
+
+Kp = 2;
+Ti = 4;
+Tt = 0.1;
+
+%% Exercise 2 - Controller design and Simulink parameters
+clc
+clear
+close all
+
+s = tf('s');
+
+Gs = tf([1], [1 1 0])
+
+% T is chosen arbitrarily
+T = 0.1;
+
+Gz = c2d(Gs, T, 'tustin')
+
+[Kps,info] = pidtune(Gs,'P')
+
+Hs = feedback(Kps*Gs, 1)
+step(Hs)
+
+Kps = piddata
+
+Hz = c2d(Hs, T, 'tustin')
+step(Hz)
+
