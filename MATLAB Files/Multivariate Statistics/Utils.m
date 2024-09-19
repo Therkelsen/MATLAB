@@ -6,32 +6,36 @@ classdef Utils
     end
     
     methods (Static)
-        function descriptive_statistics = calculate_descriptive_statistics(data, headers)
-            descriptive_statistics = [mean(data);
-                std(data);
-                range(data)];
+        function [mean_values, cov_matrix, range_values] = calculate_descriptive_statistics(data, headers)
+            % Calculate mean, covariance, and range separately
+            mean_values = mean(data);
+            cov_matrix = cov(data);
+            range_values = range(data);
             
-            % Define row names for descriptive statistics
-            rows = {'Mean', 'STD', 'Range'};
+            % Create a table for the mean, covariance diagonal, and range with headers
+            descriptive_statistics = [mean_values; diag(cov_matrix)'; range_values];
             
-            % Create a table for descriptive statistics with the same column headers
-            descriptive_statistics = array2table(descriptive_statistics, 'RowNames', rows, 'VariableNames', headers)
+            % Define row names for the table
+            rows = {'Mean', 'COV (Diagonal)', 'Range'};
+            
+            % Create a table with row names and headers
+            descriptive_statistics_table = array2table(descriptive_statistics, 'RowNames', rows, 'VariableNames', headers);
             
             % Create a line plot excluding marathon, so the plot looks better.
             figure;
             % Transpose and plot with markers
-            plot(table2array(descriptive_statistics(:, 1:end))', 'o-');
+            plot(table2array(descriptive_statistics_table)', 'o-');
             
             % Add x-axis labels and title
             xlabel('Category');
             ylabel('Values');
-            title('Mean, STD, and Range for Each Category');
+            title('Mean, Covariance Diagonal, and Range for Each Category');
             
-            % Add x-axis labels
+            % Set x-axis labels
             set(gca, 'XTick', 1:numel(headers), 'XTickLabel', headers);
             
-            % Add legend for Mean, STD, and Range
-            legend('Mean', 'STD', 'Range');
+            % Add legend for Mean, Covariance (Diagonal), and Range
+            legend('Mean', 'COV (Diagonal)', 'Range');
             
             % Rotate x-axis labels for better readability (optional)
             xtickangle(45);
@@ -39,13 +43,12 @@ classdef Utils
             % Display the plot
             grid on;
 
-            % Make plots of the multivariate scatter matrix plus marginal histograms and boxplots
             % Create a scatter matrix with marginal histograms and boxplots
             figure;
             plotmatrix(data);
             xlabel('Variables');
             ylabel('Variables');
             title('Scatter Matrix with Marginal Histograms and Boxplots');
-            end
+        end
     end
 end
