@@ -19,20 +19,20 @@ disp("Problem 2.1")
 %      of approximate linearity
 %   Conclude
 
-data = load("Lecture 2\dataset_problem_2_1.mat").X;
+data = load("Lecture 2/dataset_problem_2_1.mat").X;
 fprintf('Data Size: [%d %d]\n', size(data, 1), size(data, 2));
 
 % Define column names based on the number of columns in your data
 headers = arrayfun(@(x) sprintf('Dim %d', x), 1:size(data, 2), 'UniformOutput', false);
 
-[mean, cov, range] = utils.calculate_descriptive_statistics(data, headers);
+[mean, S, range] = utils.calculate_descriptive_statistics(data, headers);
 
 % Display mean values
 disp(array2table(mean, 'VariableNames', headers, 'RowNames', {'Mean'}));
 
-fprintf('\nCovariance Matrix (Diagonal):\n');
-% Display covariance matrix diagonal
-disp(array2table(cov, 'VariableNames', headers));
+fprintf('\nSariance Matrix (Diagonal):\n');
+% Display Sariance matrix diagonal
+disp(array2table(S, 'VariableNames', headers));
 
 % Display range values
 disp(array2table(range, 'VariableNames', headers, 'RowNames', {'Range'}));
@@ -40,20 +40,14 @@ disp(array2table(range, 'VariableNames', headers, 'RowNames', {'Range'}));
 
 % Mahalanobis
 % d^2_i = (x_i - x_bar)^T * S^-1 * (x_i - x_bar)
-mahalanobis_distances = zeros(size(data, 1), size(data, 2));
+mahalanobis_distances = [];
+% data = data';
 
-% for i=1:size(data, 2)
-%     mean = table2array(descriptive_statistics("Mean", i));
-%     S = table2array(descriptive_statistics("STD", i));
-%     for j=1:size(data, 1)
-%         mahalanobis_distances(j, i) = (data(j, i) - mean).' * inv(S) * (data(j, i) - mean);
-%     end
-% end
-% fprintf('Mahalanobis Distances Size: [%d %d]\n', size(mahalanobis_distances, 1), size(mahalanobis_distances, 2));
-% array2table(mahalanobis_distances, 'VariableNames', headers)
-
-mean = table2array(descriptive_statistics("Mean", :));
-S = table2array(descriptive_statistics("COV", :));
 for j=1:size(data, 1)
-        mahalanobis_distances(j,:) = (data(j,:) - mean).' * inv(S) * (data(j,:) - mean);
+    mahalanobis_distances = [mahalanobis_distances; (data(j, :) - mean) * inv(S) * (data(j, :) - mean)'];
 end
+% fprintf('Mahalanobis Distances Size: [%d %d]\n', size(mahalanobis_distances, 1), size(mahalanobis_distances, 2));
+array2table(mahalanobis_distances, 'VariableNames', {'Mahalanobis Distances'})
+
+figure(3)
+qqplot(mahalanobis_distances, chi2rnd(ones(1, length(data(:, 1)))))

@@ -22,7 +22,7 @@ classdef Utils
             descriptive_statistics_table = array2table(descriptive_statistics, 'RowNames', rows, 'VariableNames', headers);
             
             % Create a line plot excluding marathon, so the plot looks better.
-            figure;
+            figure(1);
             % Transpose and plot with markers
             plot(table2array(descriptive_statistics_table)', 'o-');
             
@@ -44,7 +44,7 @@ classdef Utils
             grid on;
 
             % Create a scatter matrix with marginal histograms and boxplots
-            figure;
+            figure(2);
             plotmatrix(data);
             xlabel('Variables');
             ylabel('Variables');
