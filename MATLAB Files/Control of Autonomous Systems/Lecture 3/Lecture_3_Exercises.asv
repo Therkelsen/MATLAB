@@ -12,9 +12,9 @@ P = theta/delta
 
 isstable(P)
 
-% figure(1)
-% bode(P)
-% grid on
+figure(1)
+bode(P)
+grid on
 % 
 % figure(2)
 % pzplot(P)
@@ -27,12 +27,12 @@ pg = getPeakGain(P)
 
 dg = dcgain(P)
 
-Kp = 1;
-Kd = 0.05;
-Ki = 0.2;
-% Kp = 0.5;
-% Kd = 0.25;
-% Ki = 0.05;
+Kp = 0.5;
+Kd = 0.25;
+Ki = 0.05;
+Kp = 0.5;
+Kd = 0.25;
+Ki = 0.05;
 
 % Exercise 6
 C = Kp + Ki/s + Kd*s
@@ -43,8 +43,8 @@ H2 = feedback(C * P, 1)
 
 % Exercise 7
 
-% figure(3)
-% bode(H)
-% grid on
+figure(3)
+bode(H)
+grid on
 
 % Exercise 8

@@ -36,7 +36,6 @@ disp(array2table(S, 'VariableNames', headers));
 
 % Display range values
 disp(array2table(range, 'VariableNames', headers, 'RowNames', {'Range'}));
-%% 
 
 % Mahalanobis
 % d^2_i = (x_i - x_bar)^T * S^-1 * (x_i - x_bar)
@@ -51,3 +50,8 @@ array2table(mahalanobis_distances, 'VariableNames', {'Mahalanobis Distances'})
 
 figure(3)
 qqplot(mahalanobis_distances, chi2rnd(ones(1, length(data(:, 1)))))
+
+% The dataset does not appear linear like the chi squared distribution. It
+% must be a different kind of distribution, like an exponential one.
+%%
+

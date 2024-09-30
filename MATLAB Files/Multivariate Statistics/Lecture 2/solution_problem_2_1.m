@@ -1,7 +1,7 @@
 clc;clear;close all
 format compact
 
-load('Lecture 2\dataset_problem_2_1.mat');
+load('Lecture 2/dataset_problem_2_1.mat');
 n = 130
 
 figure(1)
