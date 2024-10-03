@@ -52,8 +52,13 @@ figure(4)
 % % Example, alpha = 0.05 -> confidence = 1 - 0.05 = 95%.
 alpha = [0.5 0.25 0.05];
 % % Scatter plot
-plot(data(:,1),data(:,2),'+'),grid,xlabel('x_1','Fontsize',16); ylabel('x_2','Fontsize',16),...
-    title({['n = ' num2str(n) ' observations scatter plot for (X_1, X_2) and'];['(1-{\alpha})*100% prediction ellipses for  {\alpha}  =  [' num2str(alpha(3)) '  ' num2str(alpha(2)) '  ' num2str(alpha(1)) ']']},'Fontsize',14)
+plot(data(:,1),data(:,2),'+')
+grid
+xlabel('x_1','Fontsize',16)
+ylabel('x_2','Fontsize',16)
+title({['n = ' num2str(n) ' observations scatter plot for (X_1, X_2) and'] ...
+    ['(1-{\alpha})*100% prediction ellipses for  {\alpha}  =  [' ...
+    num2str(alpha(3)) '  ' num2str(alpha(2)) '  ' num2str(alpha(1)) ']']},'Fontsize',14)
 hold on
 
 % % calculates the inverse of the chi-squared cumulative distribution
@@ -151,7 +156,7 @@ line([1650 2050],[mu2_bonf_CI(1) mu2_bonf_CI(1)],'LineWidth',2,'Color','g')
 line([1650 2050],[mu2_bonf_CI(2) mu2_bonf_CI(2)],'LineWidth',2,'Color','g')
 text(0.999*mu1_hat,mu2_hat,'o','Fontsize',14)
 text(mu1_hat-0.075,mu2_hat+0.03,'({\mu}_1_,_h_a_t, {\mu}_2_,_h_a_t)','Fontsize',14)
-hold off
+axis off
 %--------------------------------------------------------------------------
 % Exact test of hypothesis H0: mu = mu0
 %--------------------------------------------------------------------------
@@ -179,3 +184,53 @@ text(0,0.6,['T^2 =  ' num2str(T2) '  >  critical value  = p(n-1)/(n-p)*F_p_,_n_-
 % % is true. It quantifies the strength of evidence against the null hypothesis.
 p_value = 1-fcdf(((n-p)/(p*(n-1)))*T2,p,n-p);
 text(0,0.45,['p-value =  ' num2str(p_value)],'Fontsize',14)
+%--------------------------------------------------------------------------
+% Large sample approximate test of hypothesis   H0: mu = mu0
+%-------------------------------------------------------------------------
+text(0,0.1,'Large sample approximate test of hypothesis:','Fontsize',16)
+critical_value = chi2inv(1-alpha,p)
+text(0,-0.1,['T^2 =  ' num2str(T2) '  >  critical value  = {\chi}_2^2({\alpha})  =  ' num2str(critical_value)],'Fontsize',14)
+p_value = 1-chi2cdf(T2,p);
+text(0,-0.25,['p-value =  ' num2str(p_value)],'Fontsize',14)
+%--------------------------------------------------------------------------
+% LRT approximate test of hypothesis   H0: mu = mu0
+%-------------------------------------------------------------------------
+Sigma_hat_0 = (data-mu0)'*(data-mu0)/(n-1)
+LAMBDA_LR = ((det(Sigma_hat)/det(Sigma_hat_0)))^(n/2)
+LAMBDA_LR_from_T2 = (1 + T2/(n-1))^(-n/2)
+LRT_TS = -2*log(LAMBDA_LR)
+%------------------------------------------------------------------------------------------
+% Model check
+%------------------------------------------------------------------------
+figure(7)
+axis off
+text(0,0.7,'Model check for observations possibly being from bivariate normal distribution (~ MVN with p = 2)','Fontsize',20)
+subplot(5,2,3)
+axis off
+text(0,1.2,'Descriptive statistics:','Fontsize',18)
+text(0.5,1.2,['n = ' num2str(n)],'Fontsize',16)
+text(0.5,0.85,['{\mu}_h_a_t = x = ' mat2str([mu1_hat mu2_hat],3)],'Fontsize',16)
+text(0.605,1.07,'_','Fontsize',16),warning('off')
+text(0.5,0.5,['{\Sigma}_h_a_t = S = ' mat2str(Sigma_hat,3)],'Fontsize',16)
+subplot(5,2,5:2:9)
+plotmatrix(data,'r*')
+xlabel('x_1                                          x_2','Fontsize',16)
+ylabel('x_2                           x_1','Fontsize',16)
+title(['Scattermatrix of observations'],'Fontsize',16)
+subplot(5,2,4)
+axis off
+text(0,1.2,'Sample Mahalanobis distances, i=1..n :','Fontsize',18)
+text(0,0.85,'d_i^2 = (x_i - x)^T S^-^1 (x_i - x) ~ {\chi}_2^2   (approximately)','Fontsize',16)
+text(0.158,1.05,'_','Fontsize',16),warning('off')
+text(0.358,1.05,'_','Fontsize',16),warning('off')
+subplot(5,2,6:2:10)
+mu_hat = [mu1_hat mu2_hat];
+d_i_sqr = zeros(1,n);
+for i = 1:n
+    d_i_sqr(i) = (data(i,:)-mu_hat)*inv(Sigma_hat)*(data(i,:)-mu_hat)';
+end
+df = 2;
+z_i = chi2rnd(df,1,n);
+qqplot(d_i_sqr,z_i),grid,xlabel('quantiles for d_i^2','Fontsize',16),ylabel('quantiles for {\chi}_2^2 distribution','Fontsize',16),...
+    title('qq-plot for d_i^2 versus {\chi}_2^2 distribution','Fontsize',16)
+%------------------------------------------------------------------------
