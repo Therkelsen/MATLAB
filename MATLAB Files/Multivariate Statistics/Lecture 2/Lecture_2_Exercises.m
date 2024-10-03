@@ -25,33 +25,53 @@ fprintf('Data Size: [%d %d]\n', size(data, 1), size(data, 2));
 % Define column names based on the number of columns in your data
 headers = arrayfun(@(x) sprintf('Dim %d', x), 1:size(data, 2), 'UniformOutput', false);
 
-[mean, S, range] = utils.calculate_descriptive_statistics(data, headers);
+[mean, S, range] = utils.calculate_descriptive_statistics(data, headers, true, false);
 
-% Display mean values
-disp(array2table(mean, 'VariableNames', headers, 'RowNames', {'Mean'}));
-
-fprintf('\nSariance Matrix (Diagonal):\n');
-% Display Sariance matrix diagonal
-disp(array2table(S, 'VariableNames', headers));
-
-% Display range values
-disp(array2table(range, 'VariableNames', headers, 'RowNames', {'Range'}));
-
-% Mahalanobis
-% d^2_i = (x_i - x_bar)^T * S^-1 * (x_i - x_bar)
-mahalanobis_distances = [];
-% data = data';
-
-for j=1:size(data, 1)
-    mahalanobis_distances = [mahalanobis_distances; (data(j, :) - mean) * inv(S) * (data(j, :) - mean)'];
-end
-% fprintf('Mahalanobis Distances Size: [%d %d]\n', size(mahalanobis_distances, 1), size(mahalanobis_distances, 2));
-array2table(mahalanobis_distances, 'VariableNames', {'Mahalanobis Distances'})
-
-figure(3)
-qqplot(mahalanobis_distances, chi2rnd(ones(1, length(data(:, 1)))))
+mahalanobis_distances = utils.calculate_mahalanobis_distances(data, mean, S, true, false);
 
 % The dataset does not appear linear like the chi squared distribution. It
 % must be a different kind of distribution, like an exponential one.
 %%
+clc; clear; close all;
+format compact
 
+utils = Utils;
+
+disp("Problem 2.2")
+
+% Perform the eigenvalue decomposition of Σ, i.e. Σ P Λ P^T
+
+mu = [1;
+      2;
+      0]
+
+Sigma = [4, 1, 2;
+         1, 9, -3;
+         2, -3, 5]
+
+[P, lambda] = eig(Sigma)
+
+% Find Σ^(1⁄2) = P Λ^(1⁄2) P^T
+% Where P = matrix of eigen vectors, Λ is diagonal matrix of eigenvalues
+
+Sigma_sqrt = P * sqrt(lambda) * P'
+
+n = 10000;
+p = 3;
+Y = randn(n, p);
+
+% Generate Xi = μ + Σ^(1⁄2)*Yi, be sure to keep track of dimensions
+X = mu' + Y*Sigma_sqrt;
+
+% Calculate the descriptive statistics
+% Make plots of the multivariate scatter matrix plus marginal histograms and boxplots
+headers = arrayfun(@(x) sprintf('Dim %d', x), 1:size(X, 2), 'UniformOutput', false);
+[mu_hat, Sigma_hat, range] = utils.calculate_descriptive_statistics(X, headers, true, false);
+
+% Calculate the squared sample Mahalanobis distances,
+% and make a QQ-plot versus the relevant distribution
+% for check of approximate linearity
+
+mahalanobis_distances = utils.calculate_mahalanobis_distances(X, mu_hat, Sigma_hat, true, false);
+
+% Conclusion: sometimes maybe good sometimes maybe shit. this time shit.
