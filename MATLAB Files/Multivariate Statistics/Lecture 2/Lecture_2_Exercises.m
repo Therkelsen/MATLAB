@@ -22,10 +22,7 @@ disp("Problem 2.1")
 data = load("Lecture 2/dataset_problem_2_1.mat").X;
 fprintf('Data Size: [%d %d]\n', size(data, 1), size(data, 2));
 
-% Define column names based on the number of columns in your data
-headers = arrayfun(@(x) sprintf('Dim %d', x), 1:size(data, 2), 'UniformOutput', false);
-
-[mean, S, range] = utils.calculate_descriptive_statistics(data, headers, true, false);
+[mean, S, range] = utils.calculate_descriptive_statistics(data, true, false);
 
 mahalanobis_distances = utils.calculate_mahalanobis_distances(data, mean, S, true, false);
 
@@ -65,8 +62,7 @@ X = mu' + Y*Sigma_sqrt;
 
 % Calculate the descriptive statistics
 % Make plots of the multivariate scatter matrix plus marginal histograms and boxplots
-headers = arrayfun(@(x) sprintf('Dim %d', x), 1:size(X, 2), 'UniformOutput', false);
-[mu_hat, Sigma_hat, range] = utils.calculate_descriptive_statistics(X, headers, true, false);
+[mu_hat, Sigma_hat, range] = utils.calculate_descriptive_statistics(X, true, false);
 
 % Calculate the squared sample Mahalanobis distances,
 % and make a QQ-plot versus the relevant distribution

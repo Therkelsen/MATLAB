@@ -6,22 +6,26 @@ classdef Utils
     end
     
     methods (Static)
-        function [mean_values, cov_matrix, range_values] = calculate_descriptive_statistics(data, headers, print, figure)
+        function [mean_values, cov_matrix, range_values] = calculate_descriptive_statistics(data, print, show_figures)
             % Calculate mean, covariance, and range separately
             mean_values = mean(data);
             cov_matrix = cov(data);
             range_values = range(data);
+
+            % Define column names based on the number of columns in your data
+            headers = arrayfun(@(x) sprintf('Dim %d', x), 1:size(data, 2), 'UniformOutput', false);
             
+            % Create a table for the mean, covariance diagonal, and range with headers
+            descriptive_statistics = [mean_values; diag(cov_matrix)'; range_values];
+        
+            % Define row names for the table
+            rows = {'Mean', 'COV (Diagonal)', 'Range'};
+            
+            % Create a table with row names and headers
+            descriptive_statistics_table = array2table(descriptive_statistics, 'RowNames', rows, 'VariableNames', headers);
+
             % Pass true or false through to decide whether to print the descriptive statistics.
             if print
-                % Create a table for the mean, covariance diagonal, and range with headers
-                descriptive_statistics = [mean_values; diag(cov_matrix)'; range_values];
-            
-                % Define row names for the table
-                rows = {'Mean', 'COV (Diagonal)', 'Range'};
-                
-                % Create a table with row names and headers
-                descriptive_statistics_table = array2table(descriptive_statistics, 'RowNames', rows, 'VariableNames', headers);
                 
                 % Display mean values
                 disp(array2table(mean_values, 'VariableNames', headers, 'RowNames', {'Mean'}));
@@ -35,7 +39,7 @@ classdef Utils
                 disp(array2table(range_values, 'VariableNames', headers, 'RowNames', {'Range'}));
             end
             % Pass true or false through to decide whether to display the figures
-            if figure
+            if show_figures
                 % Create a line plot
                 figure(1);
                 % Transpose and plot with markers
@@ -45,7 +49,7 @@ classdef Utils
                 xlabel('Category');
                 ylabel('Values');
                 title('Mean, Covariance Diagonal, and Range for Each Category');
-                
+
                 % Set x-axis labels
                 set(gca, 'XTick', 1:numel(headers), 'XTickLabel', headers);
                 
@@ -67,7 +71,7 @@ classdef Utils
             end
         end
 
-        function [mahalanobis_distances] = calculate_mahalanobis_distances(data, mu, S, print, figure)
+        function [mahalanobis_distances] = calculate_mahalanobis_distances(data, mu, S, print, show_figures)
             mahalanobis_distances = [];
             
             for j=1:size(data, 1)
@@ -79,10 +83,24 @@ classdef Utils
                 array2table(mahalanobis_distances, 'VariableNames', {'Mahalanobis Distances'})
             end
             % Pass true or false through to decide whether to display the figures
-            if figure
+            if show_figures
                 figure(3)
                 qqplot(mahalanobis_distances, chi2rnd(ones(1, length(data(:, 1)))))
             end
+        end
+
+        function plot2d_CR_for_mu_ellipsis (mu_hat, SIGMA_hat, alpha, n)
+            t = 0:0.01:2*pi;
+            N = length(t);
+            p = 2;
+            [V,D] = eig(SIGMA_hat);
+            a = sqrt(D(2,2))*sqrt((p*(n-1)/(n*(n-p)))*finv(1-alpha,p,n-p));
+            b = sqrt(D(1,1))*sqrt((p*(n-1)/(n*(n-p)))*finv(1-alpha,p,n-p));
+            P  = [a*cos(t); b*sin(t)];
+            theta = atan2(V(2,2),V(1,2));
+            T = [cos(theta) -sin(theta); sin(theta) cos(theta)];
+            P_rot = T*P + mu_hat*ones(1,N);
+            plot(P_rot(1,:),P_rot(2,:),'LineWidth',3,'Color','k'),grid
         end
     end
 end
