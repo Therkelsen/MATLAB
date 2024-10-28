@@ -1,7 +1,6 @@
 clc; clear; close all;
 format compact
 
-% Exercise 1.1, 1.2
 disp('State Space Model')
 A = [-0.4, 0, -0.01;
      1, 0, 0;
@@ -35,10 +34,6 @@ elseif any(poles > 0)
 else
     disp('The system is marginally stable.');
 end
-
-% Exercise 1.3 solved in simulink
-
-% Exercise 1.4
 
 % Desired poles for the closed-loop system
 disp(' ')
@@ -75,7 +70,6 @@ x_star = [0;   % q(t): pitch angular velocity (rad/s)
 % initial cond (same units)
 init_cond = [0.1, pi/8, 0];
 
-% Exercise 1.5
 disp(' ')
 disp(' ')
 disp('LQR Control')
@@ -88,9 +82,6 @@ R = 1
 % Compute the LQR gain matrix K
 K_lqr = lqr(A, B, Q, R)
 
-% Exercise 1.6 in Simulink
-
-% Exercise 2.1
 disp(' ')
 disp(' ')
 disp('Discretized LQR Control')
@@ -103,10 +94,26 @@ sys_d = c2d(sys, sample_period, 'zoh')
 % Extract the discrete-time matrices
 [A_D, B_D, C_D, D_D] = ssdata(sys_d);
 
-% Exercise 2.2
 % Compute the discretized LQR gain matrix K
 K_lqr_d = dlqr(A_D, B_D, Q, R)
 
-% Exercise 2.3 done in Simulink
+disp(' ')
+disp(' ')
+disp('LQI Control with Disturbance Rejection - Revised')
 
-% Exercise 2.4 done in Simulink
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
