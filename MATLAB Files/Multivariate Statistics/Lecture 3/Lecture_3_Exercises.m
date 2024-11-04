@@ -109,7 +109,6 @@ alpha_contour = [0.05 0.05];
 
 % % Draw the ellipses using Claus' handy little tool
 figure(5)
-title({'95% Confidence region and intervals for ({\mu}_1, {\mu}_2) based on observations:';'CR (black), simult.CI (red), marg.CI (blue), Bonf.CI (green)'},'Fontsize',14)
 utils.plot2d_CR_for_mu_ellipsis (mu_hat',Sigma_hat,alpha,n)
 title({'95% Confidence region and intervals for ({\mu}_1, {\mu}_2) based on observations:';'CR (black), simult.CI (red), marg.CI (blue), Bonf.CI (green)'},'Fontsize',14)
 hold on

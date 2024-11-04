@@ -6,7 +6,7 @@ classdef Utils
     end
     
     methods (Static)
-        function [mean_values, cov_matrix, range_values] = calculate_descriptive_statistics(data, print, show_figures)
+        function [mean_values, cov_matrix, range_values] = calculate_descriptive_statistics(data, print, show_figures, data_name)
             % Calculate mean, covariance, and range separately
             mean_values = mean(data);
             cov_matrix = cov(data);
@@ -41,14 +41,14 @@ classdef Utils
             % Pass true or false through to decide whether to display the figures
             if show_figures
                 % Create a line plot
-                figure(1);
+                figure;
                 % Transpose and plot with markers
                 plot(table2array(descriptive_statistics_table)', 'o-');
                 
                 % Add x-axis labels and title
                 xlabel('Category');
                 ylabel('Values');
-                title('Mean, Covariance Diagonal, and Range for Each Category');
+                title(data_name + ': Mean, Covariance Diagonal, and Range for Each Category');
 
                 % Set x-axis labels
                 set(gca, 'XTick', 1:numel(headers), 'XTickLabel', headers);
@@ -63,15 +63,15 @@ classdef Utils
                 grid on;
     
                 % Create a scatter matrix with marginal histograms and boxplots
-                figure(2);
+                figure;
                 plotmatrix(data);
                 xlabel('Variables');
                 ylabel('Variables');
-                title('Scatter Matrix with Marginal Histograms and Boxplots');
+                title(data_name + ': Scatter Matrix with Marginal Histograms and Boxplots');
             end
         end
 
-        function [mahalanobis_distances] = calculate_mahalanobis_distances(data, mu, S, print, show_figures)
+        function [mahalanobis_distances] = calculate_mahalanobis_distances(data, mu, S, print, show_figures, data_name)
             mahalanobis_distances = [];
             
             for j=1:size(data, 1)
@@ -84,8 +84,9 @@ classdef Utils
             end
             % Pass true or false through to decide whether to display the figures
             if show_figures
-                figure(3)
+                figure
                 qqplot(mahalanobis_distances, chi2rnd(ones(1, length(data(:, 1)))))
+                title(data_name + ': QQplot for Mahalanobis distances vs. Χ² distances')
             end
         end
 
