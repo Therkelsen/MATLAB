@@ -17,17 +17,6 @@ syms x1 x2
 
 Xdot = subs(Xdot, [P1, P2], [x1, x2])
 
-% Calculate EQ Points
-eq = solve(subs(Xdot == [0; 0], u, 0), [x1, x2]);
-xeq1 = double([eq.x1(1);
-               eq.x2(1)])
-xeq2 = double([eq.x1(2);
-               eq.x2(2)])
-disp(' ');
-disp('Equilibrium points (x1, x2):');
-disp([xeq1, xeq2]);
-disp(' ');
-
 % Jacobian
 dfdx = [diff(Xdot(1),x1) diff(Xdot(1),x2);
         diff(Xdot(2),x1), diff(Xdot(2), x2)]
