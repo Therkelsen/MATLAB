@@ -57,7 +57,7 @@ df2dx2 = diff(X_dot(2), x2)
 
 A = [df1dx1, df1dx2;
      df2dx1, df2dx2]
-
+A = double(A);
 % A = double(subs(A, {x1, x2}, {I_star_1, omega_star_1}))
 
 B = double(diff(X_dot, u))
@@ -102,3 +102,17 @@ if rankC == n
 else
     disp('The system is not controllable.')
 end
+
+% Q5 - Simulink Implementation
+u_eq = subs(u_eq, params, values);
+I_eq = subs(I_eq, params, values);
+omega_eq = subs(omega_eq, params, values);
+
+omega_star_1 = 10
+I_star_1 = subs(I_eq, x2, omega_star_1)
+I_star_1 = double(I_star_1)
+x_star_1 = [I_star_1, omega_star_1];
+u_star_1 = subs(u_eq, ss_states, x_star_1)
+u_star_1 = double(u_star_1)
+
+% System stays at x_star_1, it is indeed a valid eq point.

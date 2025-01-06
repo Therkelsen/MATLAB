@@ -21,33 +21,14 @@ sysCT = ss(A,B,C,D); % creates a system object in CT
 
 
 
-% Linear Quadratic Regulator (with different tunings)
-Q = eye(3);
-R = 100*eye(1);
-%R = 1000*eye(1); % different tuning
-%R = 1e5*eye(1);
+% Linear Quadratic Regulator
+Q = 10*eye(3);
+R = eye(1);
 K = lqr(A,B,Q,R);
 
-% feedforward gain computation
-N = inv([ A , B ; C , 0 ]);
-N_x = N(1:3,4);
-N_u = N(4,4);
+% Linear Quadratic Regulator with integration
+Q_E = 10*diag([1;1;1;1]);
+R = eye(1);
+K_E = lqi(sysCT,Q_E,R);
 
-N_bar = N_u + K*N_x;
 
-% discretization
-sysDT = c2d(sysCT,10*Ts,'tustin');
-[Ad,Bd,Cd,Dd] = ssdata(sysDT);
-
-% stability of DT system in OL?
-lambda_DT = eig(Ad) % not stable because 2 of the eigenvalues have their norm bigger than 1.
-
-% Linear Quadratic Regulator in discrete-time
-Kd = dlqr(Ad,Bd,Q,R);
-
-% feedforward gain computation in discrete-time
-Nd = inv([ Ad-eye(3) , Bd ; Cd , Dd ]);
-Nd_x = Nd(1:3,4);
-Nd_u = Nd(4,4);
-
-Nd_bar = Nd_u + Kd*Nd_x;
