@@ -79,9 +79,9 @@ end
 
 % Controllability matrix
 n = length(X);
-C = B;  % Initialize with B
+Wc = B;  % Initialize with B
 for i = 1:n-1
-    C = [C, A^i * B];
+    Wc = [Wc, A^i * B];
 end
 
 disp('B:')
@@ -91,13 +91,13 @@ disp('A*B')
 disp(A*B)
 
 % Check rank of the controllability matrix
-rankC = rank(C);  % Symbolic rank
+rankWc = rank(Wc);  % Symbolic rank
 
 % Output
 disp('Controllability Matrix:');
-disp(C);
-disp(['Rank of Controllability Matrix: ', num2str(rankC)]);
-if rankC == n
+disp(Wc);
+disp(['Rank of Controllability Matrix: ', num2str(rankWc)]);
+if rankWc == n
     disp('The system is controllable.')
 else
     disp('The system is not controllable.')
@@ -145,6 +145,21 @@ else
     disp('The system is marginally stable.');
 end
 
-x_star_2 = [0, 10]
+x_star_2 = [0, 10];
 
-randseed = randi([])
+x_star_3 = [0, 0];
+
+C = [0, 1];
+
+% feedforward gain computation
+n = size(A, 1); % Number of states
+m = size(B, 2); % Number of inputs
+p = size(C, 1); % Number of outputs
+
+% Feedforward gain computation
+N = inv([A, B; C, zeros(p, m)])
+
+N_x = N(1:n, n+1:n+m)
+N_u = N(n+1:n+p, n+1:n+m)
+
+N_bar = N_u + K * N_x
