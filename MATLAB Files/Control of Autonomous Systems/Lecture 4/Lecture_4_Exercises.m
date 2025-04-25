@@ -1,16 +1,19 @@
 clc; clear; close all;
 format compact
 
+% 1.1 in Simulink
+% 1.2
 disp('State Space Model')
 A = [-0.4, 0, -0.01;
      1, 0, 0;
-     -1.4, 9.8, -0.02]F
-     0;
-     9.8]
+     -1.4, 9.8, -0.02];
+
+B = [ 6.3 ; 0 ; 9.8 ];
 
 % Since C (output) is not explicitly stated, we can assume
 % that it is an identity matrix same dimensions as A
 C = eye(size(A))
+C(1,3) = 1
 
 % Feedthrough is not defined, so this is a zero vector
 % with the same size as B
@@ -33,6 +36,9 @@ else
     disp('The system is marginally stable.');
 end
 
+% 1.3 in Simulink
+
+% 1.4
 % Desired poles for the closed-loop system
 disp(' ')
 disp(' ')
@@ -68,6 +74,7 @@ x_star = [0;   % q(t): pitch angular velocity (rad/s)
 % initial cond (same units)
 init_cond = [0.1, pi/8, 0];
 
+% 1.5
 disp(' ')
 disp(' ')
 disp('LQR Control')
@@ -80,6 +87,7 @@ R = 1
 % Compute the LQR gain matrix K
 K_lqr = lqr(A, B, Q, R)
 
+% 2.1
 disp(' ')
 disp(' ')
 disp('Discretized LQR Control')
@@ -92,26 +100,6 @@ sys_d = c2d(sys, sample_period, 'zoh')
 % Extract the discrete-time matrices
 [A_D, B_D, C_D, D_D] = ssdata(sys_d);
 
+% 2.2
 % Compute the discretized LQR gain matrix K
 K_lqr_d = dlqr(A_D, B_D, Q, R)
-
-disp(' ')
-disp(' ')
-disp('LQI Control with Disturbance Rejection - Revised')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
