@@ -2,6 +2,12 @@ clc; clear;close all
 
 %% Dynamic model of hexacopter
 
+% PID GAINS
+% Altitude: 1,0,8
+% Roll : 1,0,5
+% Pitch : 1,0,5
+% Yaw : 1,0,3
+
 % Simulation parameters:
     g = 9.82; % Acceleration of gravity [m/s^2]
     % Aero parameters
@@ -49,14 +55,14 @@ T_inv = pinv(T);
 % Fault detection parameters:
     A = [zeros(4),eye(4);
          zeros(4),zeros(4)];
- %  K = [eye(4)*1.1;eye(4)*0.3025];
- %  C = [eye(4),zeros(4)];
-    C = eye(8);
+  K = [eye(4)*1.1;eye(4)*0.3025]*10;
+   % C = [eye(4),zeros(4)];
+   C = eye(8);
     B = [zeros(4);
          0,-L/Ix,0,L/Ix;  %0,-L/Iy,0,L/Ix?
          -L/Iy,0,L/Iy,0;
          d/(b*Iz),-d/(b*Iz),d/(b*Iz),-d/(b*Iz);
          1/m,1/m,1/m,1/m;];
-    desired_poles = [-50,-60,-70,-80,-90,-100,-110,-120];
-    K = place(A', C', desired_poles)';
+    desired_poles = [-10+2i,-10-2i,-40+2i,-40-2i,-30+2i,-30-2i,-20+2i,-20-2i];
+    K = place(A', C', desired_poles)'
     
