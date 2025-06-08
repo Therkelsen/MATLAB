@@ -25,8 +25,8 @@ clc; clear;close all
     b = 1.177e-5; % Thrust coefficient [N/m^2]
     d = 1.855e-7; % Drag coefficient
     m = 2.5; % Mass [kg]
-    Ix = 100*0.00915; % moment of inertia x [kg*m^2]
-    Iy = 100*0.00915; % moment of inertia y [kg*m^2]
+    Ix = 0.00915; % moment of inertia x [kg*m^2]
+    Iy = 0.00915; % moment of inertia y [kg*m^2]
     Iz = 0.01187; % moment of inertia z [kg*m^2]
 
     % Rotor parameters:
@@ -55,14 +55,14 @@ T_inv = pinv(T);
 % Fault detection parameters:
     A = [zeros(4),eye(4);
          zeros(4),zeros(4)];
-  K = [eye(4)*1.1;eye(4)*0.3025]*10;
-   % C = [eye(4),zeros(4)];
-   C = eye(8);
+    K = [eye(4)*1.1;eye(4)*0.3025]*10;
+    C = [eye(4),zeros(4)];
+    %C = eye(8);
     B = [zeros(4);
          0,-L/Ix,0,L/Ix;  %0,-L/Iy,0,L/Ix?
          -L/Iy,0,L/Iy,0;
          d/(b*Iz),-d/(b*Iz),d/(b*Iz),-d/(b*Iz);
          1/m,1/m,1/m,1/m;];
-    desired_poles = [-10+2i,-10-2i,-40+2i,-40-2i,-30+2i,-30-2i,-20+2i,-20-2i];
-    K = place(A', C', desired_poles)'
+    desired_poles = [-10,-10,-40,-40,-30,-30,-20,-20];
+    %K = place(A', C', desired_poles)'
     
